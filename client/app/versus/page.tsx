@@ -1,27 +1,45 @@
+"use client"
 import React from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import {  Flag, MessageSquare, Redo } from "lucide-react"
 import Header from '@/components/ui/header'
+import { Chessboard } from 'react-chessboard'
 
 export default function Versus() {
+  // [ ] Connect to API and handle play against bot
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950">
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-3 gap-8">
           <Card className="md:col-span-2 h-[85vh] flex flex-col items-center justify-center">
-            {/* All placeholders for now*/}
+            {/* [ ] Replace with actual chessboard and real data*/}
             <CardContent className="h-full flex flex-col justify-center">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center p-2">
                 <CardTitle className="text-xl font-bold">Player 1</CardTitle>
                 <span className="text-2xl font-bold">6:42</span>
               </div>
-              <div className="aspect-square bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900 dark:to-amber-800 rounded-lg shadow-inner flex items-center justify-center mb-2 h-5/6">
-                <span className="text-4xl">Chess Board Placeholder</span>
+              <div>
+              <Chessboard 
+                customBoardStyle={{
+                  borderRadius: "8px",
+                  border: "2px solid rgba(255, 255, 255, 0.1)",
+                }}
+                customDarkSquareStyle={{
+                  backgroundColor: "#0f1217",
+                  background: "linear-gradient(45deg, #374151, #2d3748)",
+                }}
+                customLightSquareStyle={{
+                  backgroundColor: "#e2e8f0",
+                  background: "linear-gradient(45deg, #e2e8f0, #cbd5e1)",
+                }}
+                boardWidth={550}
+              />
               </div>
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center p-2">
                 <CardTitle className="text-xl font-bold">Player 2</CardTitle>
                 <span className="text-2xl font-bold">5:12</span>
               </div>

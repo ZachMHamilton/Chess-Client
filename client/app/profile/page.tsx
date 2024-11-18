@@ -5,6 +5,7 @@ import { TabsContent, TabsList, TabsTrigger, Tabs } from "@/components/ui/tabs"
 import { AwardIcon, CastleIcon, TrendingUp, Trophy, UserPen } from 'lucide-react'
 import Header from '@/components/ui/header'
 
+// [ ] Connect to users API to get real data
 export default function Profile() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950">
