@@ -16,7 +16,6 @@ export default function Versus() {
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-3 gap-8">
           <Card className="md:col-span-2 h-[85vh] flex flex-col items-center justify-center">
-            {/* [ ] Replace with actual chessboard and real data*/}
             <CardContent className="h-full flex flex-col justify-center">
               <div className="flex justify-between items-center p-2">
                 <CardTitle className="text-xl font-bold">Player 1</CardTitle>

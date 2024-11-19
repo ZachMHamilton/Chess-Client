@@ -1,13 +1,34 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { HelpCircle, RotateCcw, SkipForward } from 'lucide-react'
 import Header from '@/components/ui/header'
 import { Chessboard } from 'react-chessboard'
+import { Chess } from 'chess.js'
+import { makeMove } from '@/lib/makeMove'
 
+// [ ] Connect to puzzles API to get real data
 export default function Puzzles() {
-  // [ ] Connect to puzzles API to get real data
+  const [game, setGame] = useState<Chess>(new Chess());
+
+  const onDrop = (sourceSquare: string, targetSquare: string): boolean => {
+    try {
+      const result = makeMove({
+        from: sourceSquare,
+        to: targetSquare,
+        promotion: "q",
+      }, game);
+
+      if (result){
+        setGame(result);
+      }
+    } catch (error) {
+      console.error('Error during onDrop operation: ' + error);
+      return false;
+    }
+    return true;
+  };
 
   return (
     <div className="flex flex-col min-h-screen max-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950">
@@ -15,7 +36,6 @@ export default function Puzzles() {
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-3 gap-8">
           <Card className="md:col-span-2 h-[85vh] flex items-center justify-center">
-            {/* [ ] Replace with actual chessboard and real data*/}
             <CardContent className="flex-grow flex items-center justify-center h-full p-6">
               <div>
               <Chessboard 
@@ -32,6 +52,8 @@ export default function Puzzles() {
                   background: "linear-gradient(45deg, #e2e8f0, #cbd5e1)",
                 }}
                 boardWidth={600}
+                onPieceDrop={onDrop}
+                position={game.fen()} 
               />
               </div>
             </CardContent>
