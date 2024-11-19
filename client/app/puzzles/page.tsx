@@ -13,20 +13,17 @@ export default function Puzzles() {
   const [game, setGame] = useState<Chess>(new Chess());
 
   const onDrop = (sourceSquare: string, targetSquare: string): boolean => {
-    try {
-      const result = makeMove({
-        from: sourceSquare,
-        to: targetSquare,
-        promotion: "q",
-      }, game);
+    const result = makeMove({
+      from: sourceSquare,
+      to: targetSquare,
+      promotion: "q",
+    }, game);
 
-      if (result){
-        setGame(result);
-      }
-    } catch (error) {
-      console.error('Error during onDrop operation: ' + error);
+    if (!result) {
       return false;
     }
+
+    setGame(result);
     return true;
   };
 

@@ -7,7 +7,7 @@ export const makeMove = (move: Move, game: Chess): Chess | null => {
     gameCopy.move(move);
     return gameCopy;
   } catch (error) {
-    console.log('Error during makeMove operation: ' + error);
+    console.error('Error during makeMove operation: ' + error);
   }
   return null;
 };

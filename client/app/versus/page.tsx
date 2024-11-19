@@ -1,14 +1,31 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import {  Flag, MessageSquare, Redo } from "lucide-react"
 import Header from '@/components/ui/header'
 import { Chessboard } from 'react-chessboard'
+import { Chess } from 'chess.js'
+import { makeMove } from '@/lib/makeMove'
 
+// [ ] Connect to API and handle play against bot
 export default function Versus() {
-  // [ ] Connect to API and handle play against bot
+  const [game, setGame] = useState<Chess>(new Chess());
+  const onDrop = (sourceSquare: string, targetSquare: string): boolean => {
+    const result = makeMove({
+      from: sourceSquare,
+      to: targetSquare,
+      promotion: "q",
+    }, game);
+
+    if (!result) {
+      return false;
+    }
+
+    setGame(result);
+    return true;
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950">
@@ -36,6 +53,8 @@ export default function Versus() {
                   background: "linear-gradient(45deg, #e2e8f0, #cbd5e1)",
                 }}
                 boardWidth={550}
+                onPieceDrop={onDrop}
+                position={game.fen()} 
               />
               </div>
               <div className="flex justify-between items-center p-2">
