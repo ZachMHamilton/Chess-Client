@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -9,9 +9,37 @@ import { Chessboard } from 'react-chessboard'
 import { Chess } from 'chess.js'
 import { makeMove } from '@/lib/makeMove'
 
-// [ ] Connect to API and handle play against bot
 export default function Versus() {
   const [game, setGame] = useState<Chess>(new Chess());
+  const [turn, setTurn] = useState<string>('user');
+
+  useEffect(() => {
+    if(turn == 'bot') {
+      fetch('https://localhost:7198/api/Bot/move', {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          fen: game.fen(),
+          moves: game.moves(),
+        })
+      })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        const newGame = new Chess(game.fen());
+        newGame.move(data.move);
+        setTurn('user');
+        setGame(newGame);
+      })
+      .catch((error) => {
+        console.error("Error fetching move from backend:", error);
+      });
+    }
+  }, [turn, game]);
+  
   const onDrop = (sourceSquare: string, targetSquare: string): boolean => {
     const result = makeMove({
       from: sourceSquare,
@@ -24,6 +52,7 @@ export default function Versus() {
     }
 
     setGame(result);
+    setTurn(turn == 'user' ? 'bot' : 'user');
     return true;
   };
 

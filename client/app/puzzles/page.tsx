@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { HelpCircle, RotateCcw, SkipForward } from 'lucide-react'
@@ -11,6 +11,10 @@ import { makeMove } from '@/lib/makeMove'
 // [ ] Connect to puzzles API to get real data
 export default function Puzzles() {
   const [game, setGame] = useState<Chess>(new Chess());
+
+  useEffect(() => {
+    // [ ] Fetch puzzle data
+  });
 
   const onDrop = (sourceSquare: string, targetSquare: string): boolean => {
     const result = makeMove({
