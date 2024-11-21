@@ -9,6 +9,7 @@ import { Chessboard } from 'react-chessboard'
 import { Chess } from 'chess.js'
 import { makeMove } from '@/lib/makeMove'
 
+
 export default function Versus() {
   const [game, setGame] = useState<Chess>(new Chess());
   const [turn, setTurn] = useState<string>('user');
@@ -29,8 +30,7 @@ export default function Versus() {
         return response.json();
       })
       .then((data) => {
-        const newGame = new Chess(game.fen());
-        newGame.move(data.move);
+        const newGame = new Chess(data.fen);
         setTurn('user');
         setGame(newGame);
       })
