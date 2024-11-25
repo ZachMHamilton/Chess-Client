@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import {  Flag, MessageSquare, Redo } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import Header from '@/components/ui/header'
 import { Chessboard } from 'react-chessboard'
 import { Chess } from 'chess.js'
@@ -13,6 +14,42 @@ import { makeMove } from '@/lib/makeMove'
 export default function Versus() {
   const [game, setGame] = useState<Chess>(new Chess());
   const [turn, setTurn] = useState<string>('user');
+  const [showGamePrompt, setShowGamePrompt] = useState(false);
+  const [hasCurrentGame, setHasCurrentGame] = useState(true);
+  const [existingGame, setExistingGame] = useState<string | null>(null);
+
+  useEffect(() => {
+    // [ ] Get userId from context
+    const userId = '5cbac2ac-0c38-46c7-b093-268f494df301';
+    
+    // Fetch the active game for the user
+    fetch(`https://localhost:7198/api/Game/active/${userId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then((data) => {
+            if (data != null) {
+              const mostRecentGame = data[0];
+              setExistingGame(mostRecentGame.fen);
+              console.log(mostRecentGame.fen);
+              setShowGamePrompt(true);
+              setHasCurrentGame(true);
+            } else {
+                setHasCurrentGame(false);
+            }
+        })
+        .catch((error) => {
+            console.error("Error fetching active games from backend:", error);
+        });
+  }, []); 
 
   useEffect(() => {
     if(turn == 'bot') {
@@ -146,6 +183,33 @@ export default function Versus() {
           </div>
         </div>
       </main>
+      <Dialog open={showGamePrompt} onOpenChange={setShowGamePrompt}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Chess Game</DialogTitle>
+            <DialogDescription>
+              {hasCurrentGame 
+                ? "You have an unfinished game. Would you like to continue or start a new one?"
+                : "Would you like to start a new game?"}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end space-x-4 mt-4">
+            {hasCurrentGame && (
+              <Button onClick={() => {
+                setGame(existingGame == null ? new Chess() : new Chess(existingGame));
+                setShowGamePrompt(false)
+              }}>
+                Continue Game
+              </Button>
+            )}
+            <Button onClick={() => {
+              setShowGamePrompt(false)
+            }}>
+              New Game
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
