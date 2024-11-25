@@ -1,12 +1,16 @@
-import React from 'react'
+'use client'
+import React, { useContext } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { TabsContent, TabsList, TabsTrigger, Tabs } from "@/components/ui/tabs"
 import { AwardIcon, CastleIcon, TrendingUp, Trophy, UserPen } from 'lucide-react'
 import Header from '@/components/ui/header'
+import { AuthContext } from '@/context/auth-context'
 
 // [ ] Connect to users API to get real data
 export default function Profile() {
+  const user = useContext(AuthContext);
+  
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950">
       <Header />
@@ -16,7 +20,7 @@ export default function Profile() {
             <CardContent className="flex items-center space-x-4 pt-6">
               <UserPen size={42}/>
               <div>
-                <h2 className="text-2xl font-bold">Zach Hamilton</h2>
+                <h2 className="text-2xl font-bold">{user}</h2>
                 <p className="text-gray-500 dark:text-gray-400">Chess Enthusiast</p>
               </div>
             </CardContent>

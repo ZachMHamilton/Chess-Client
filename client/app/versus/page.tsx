@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -9,9 +9,11 @@ import Header from '@/components/ui/header'
 import { Chessboard } from 'react-chessboard'
 import { Chess } from 'chess.js'
 import { makeMove } from '@/lib/makeMove'
+import { AuthContext } from '@/context/auth-context'
 
 
 export default function Versus() {
+  const user = useContext(AuthContext);
   const [game, setGame] = useState<Chess>(new Chess());
   const [turn, setTurn] = useState<string>('user');
   const [showGamePrompt, setShowGamePrompt] = useState(false);
@@ -19,6 +21,7 @@ export default function Versus() {
   const [existingGame, setExistingGame] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log(user);
     // [ ] Get userId from context
     const userId = '5cbac2ac-0c38-46c7-b093-268f494df301';
     
@@ -36,7 +39,7 @@ export default function Versus() {
             return response.json();
         })
         .then((data) => {
-            if (data != null) {
+            if (data[0].fen != null) {
               const mostRecentGame = data[0];
               setExistingGame(mostRecentGame.fen);
               console.log(mostRecentGame.fen);
@@ -101,8 +104,7 @@ export default function Versus() {
           <Card className="md:col-span-2 h-[85vh] flex flex-col items-center justify-center">
             <CardContent className="h-full flex flex-col justify-center">
               <div className="flex justify-between items-center p-2">
-                <CardTitle className="text-xl font-bold">Player 1</CardTitle>
-                <span className="text-2xl font-bold">6:42</span>
+                <CardTitle className="text-xl font-bold">AI</CardTitle>
               </div>
               <div>
               <Chessboard 
@@ -129,8 +131,7 @@ export default function Versus() {
               />
               </div>
               <div className="flex justify-between items-center p-2">
-                <CardTitle className="text-xl font-bold">Player 2</CardTitle>
-                <span className="text-2xl font-bold">5:12</span>
+                <CardTitle className="text-xl font-bold">{user}</CardTitle>
               </div>
             </CardContent>
           </Card>

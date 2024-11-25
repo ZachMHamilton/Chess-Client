@@ -1,13 +1,15 @@
-"use client"
-import React from 'react'
+'use client'
+import React, { useContext } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { TabsContent, TabsList, TabsTrigger, Tabs } from "@/components/ui/tabs"
 import { CircuitBoard, Users } from 'lucide-react'
 import Header from '@/components/ui/header'
 import { useRouter } from 'next/navigation'
+import { AuthContext } from '@/context/auth-context'
 
 export default function Home() {
+  const user = useContext(AuthContext);
   const router = useRouter();
 
   return (
@@ -15,7 +17,7 @@ export default function Home() {
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8">
         <section className="mb-12 text-center">
-          <h2 className="text-4xl font-bold mb-4 text-gray-800 dark:text-white">Welcome!</h2>
+          <h2 className="text-4xl font-bold mb-4 text-gray-800 dark:text-white">Welcome {user}!</h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">Enhance your chess skills with puzzles and head-to-head gameplay</p>
           <div className="flex justify-center space-x-4">
             <Button size="lg" onClick={() => router.push('/puzzles')}>
