@@ -59,7 +59,7 @@ export default function Versus() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          id: 3,
+          gameId: 3,
           fen: game.fen(),
         })
       })
