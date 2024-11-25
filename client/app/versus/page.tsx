@@ -22,8 +22,8 @@ export default function Versus() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+          id: 3,
           fen: game.fen(),
-          moves: game.moves(),
         })
       })
       .then((response) => {
@@ -74,16 +74,21 @@ export default function Versus() {
                   border: "2px solid rgba(255, 255, 255, 0.1)",
                 }}
                 customDarkSquareStyle={{
-                  backgroundColor: "#0f1217",
                   background: "linear-gradient(45deg, #374151, #2d3748)",
                 }}
                 customLightSquareStyle={{
-                  backgroundColor: "#e2e8f0",
                   background: "linear-gradient(45deg, #e2e8f0, #cbd5e1)",
+                }}
+                customPremoveDarkSquareStyle={{
+                  background: "linear-gradient(45deg, #A42323, #831212)",
+                }}
+                customPremoveLightSquareStyle={{
+                  background: "linear-gradient(45deg, #BD2828, #9B1E1E)",
                 }}
                 boardWidth={550}
                 onPieceDrop={onDrop}
                 position={game.fen()} 
+                arePremovesAllowed={true}
               />
               </div>
               <div className="flex justify-between items-center p-2">
