@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { TabsContent, TabsList, TabsTrigger, Tabs } from "@/components/ui/tabs"
@@ -7,9 +7,31 @@ import { AwardIcon, CastleIcon, TrendingUp, Trophy, UserPen } from 'lucide-react
 import Header from '@/components/ui/header'
 import { AuthContext } from '@/context/auth-context'
 
-// [ ] Connect to users API to get real data
 export default function Profile() {
-  const {user} = useContext(AuthContext);
+  const {user, userStats} = useContext(AuthContext);
+  const [games, setGames] = useState([]);
+
+  function getGameHistory(){
+    fetch(`https://localhost:7198/api/Game/User/${userStats.userId}/`, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setGames(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user history:", error);
+      });
+  }
   
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950">
@@ -25,32 +47,13 @@ export default function Profile() {
               </div>
             </CardContent>
           </Card>
-          {/* Placeholder values for now*/}
           <Tabs defaultValue="stats" className="space-y-4">
             <TabsList>
               <TabsTrigger value="stats">Stats</TabsTrigger>
-              <TabsTrigger value="history">Game History</TabsTrigger>
+              <TabsTrigger value="history" onClick={() => getGameHistory()}>Game History</TabsTrigger>
             </TabsList>
             <TabsContent value="stats" className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Games</CardTitle>
-                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">245</div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Win Rate</CardTitle>
-                    <Trophy className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">62%</div>
-                  </CardContent>
-                </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">ELO Rating</CardTitle>
@@ -62,11 +65,29 @@ export default function Profile() {
                 </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Games</CardTitle>
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{userStats.gamesPlayed}</div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Win Rate</CardTitle>
+                    <Trophy className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{userStats.winRate}%</div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Puzzles Solved</CardTitle>
                     <CastleIcon className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">528</div>
+                    <div className="text-2xl font-bold">{userStats.puzzlesSolved}</div>
                   </CardContent>
                 </Card>
               </div>

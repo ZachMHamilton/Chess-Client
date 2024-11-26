@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 import { AuthContext } from '@/context/auth-context'
 
 export default function Home() {
-  const {user} = useContext(AuthContext);
+  const {user, userStats} = useContext(AuthContext);
   const router = useRouter();
   console.log(user);
 
@@ -45,20 +45,20 @@ export default function Home() {
               {/* All placeholders for now*/}
               <CardContent className="grid gap-4 md:grid-cols-2">
                 <div className="flex flex-col space-y-2">
+                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Games Played</span>
+                  <span className="text-3xl font-bold text-purple-600 dark:text-purple-400">{userStats.gamesPlayed}</span>
+                </div>
+                <div className="flex flex-col space-y-2">
                   <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Puzzles Solved</span>
-                  <span className="text-3xl font-bold text-blue-600 dark:text-blue-400">247</span>
+                  <span className="text-3xl font-bold text-blue-600 dark:text-blue-400">{userStats.puzzlesSolved}</span>
+                </div>
+                <div className="flex flex-col space-y-2">
+                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Win Rate</span>
+                  <span className="text-3xl font-bold text-orange-600 dark:text-orange-400">{userStats.winRate}%</span>
                 </div>
                 <div className="flex flex-col space-y-2">
                   <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Current Streak</span>
                   <span className="text-3xl font-bold text-green-600 dark:text-green-400">7 days</span>
-                </div>
-                <div className="flex flex-col space-y-2">
-                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Games Played</span>
-                  <span className="text-3xl font-bold text-purple-600 dark:text-purple-400">52</span>
-                </div>
-                <div className="flex flex-col space-y-2">
-                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Win Rate</span>
-                  <span className="text-3xl font-bold text-orange-600 dark:text-orange-400">62%</span>
                 </div>
               </CardContent>
             </Card>
