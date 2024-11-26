@@ -1,8 +1,18 @@
+"use client";
+import { useContext } from "react";
 import Home from "./home/page";
+import { AuthContext } from "@/context/auth-context";
+import Login from "./login/page";
 
-// [ ] Add routing logic for logged in or not
 export default function App() {
+  const {user} = useContext(AuthContext);
   return (
-    <Home />
+    <div>
+      {user != null ? (
+        <Home />
+      ) : (
+        <Login />
+      )}
+    </div>
   );
 }

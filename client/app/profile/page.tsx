@@ -9,7 +9,7 @@ import { AuthContext } from '@/context/auth-context'
 
 // [ ] Connect to users API to get real data
 export default function Profile() {
-  const user = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
   
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950">

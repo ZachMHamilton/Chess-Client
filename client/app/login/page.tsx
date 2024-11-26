@@ -1,11 +1,67 @@
-import React from 'react'
+'use client'
+import React, { useContext, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { AuthContext } from '@/context/auth-context'
+import { useRouter } from 'next/navigation'
 
 export default function Login() {
+  const router = useRouter();
+  const {setUser, setUserStats} = useContext(AuthContext);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  
+  function handleLogin(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    e.preventDefault();
+    fetch('https://localhost:7198/api/User/login/', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          username: username,
+          password: password,
+      })
+    })
+      .then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setUser(username);
+        handleStats();
+        router.push('/home');
+      })
+      .catch((error) => {
+        console.error("Error logging in:", error);
+      });
+  }
+
+  function handleStats(){
+    fetch(`https://localhost:7198/api/User/${username}/`, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+    })
+      .then((response) => {
+          if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+      })
+      .then((data) => {
+          setUserStats(data);
+      })
+      .catch((error) => {
+          console.error("Error fetching user stats:", error);
+      });
+  }
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950">
       <main className="flex-grow container mx-auto px-4 py-8 flex items-center justify-center">
@@ -27,13 +83,13 @@ export default function Login() {
                   <div className="grid gap-4">
                     <div className="grid gap-2">
                       <Label htmlFor="email">Username</Label>
-                      <Input id="string" type="text" required />
+                      <Input id="string" type="text" required onChange={(e) => setUsername(e.target.value)}/>
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="password">Password</Label>
-                      <Input id="password" type="password" required />
+                      <Input id="password" type="password" required onChange={(e) => setPassword(e.target.value)}/>
                     </div>
-                    <Button className="w-full">Sign In</Button>
+                    <Button className="w-full" onClick={(e) => handleLogin(e)}>Sign In</Button>
                   </div>
                 </form>
               </TabsContent>

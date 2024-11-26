@@ -13,17 +13,15 @@ import { AuthContext } from '@/context/auth-context'
 
 
 export default function Versus() {
-  const user = useContext(AuthContext);
+  const {user, userStats} = useContext(AuthContext);
   const [game, setGame] = useState<Chess>(new Chess());
   const [turn, setTurn] = useState<string>('user');
   const [showGamePrompt, setShowGamePrompt] = useState(false);
   const [hasCurrentGame, setHasCurrentGame] = useState(true);
   const [existingGame, setExistingGame] = useState<string | null>(null);
+  const userId = userStats.userId;
 
   useEffect(() => {
-    console.log(user);
-    // [ ] Get userId from context
-    const userId = '5cbac2ac-0c38-46c7-b093-268f494df301';
     
     // Fetch the active game for the user
     fetch(`https://localhost:7198/api/Game/active/${userId}`, {
