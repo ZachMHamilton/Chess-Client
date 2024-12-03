@@ -13,7 +13,39 @@ export default function Login() {
   const {setUser, setUserStats} = useContext(AuthContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState('');
   
+  function handleRegister(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    e.preventDefault();
+    fetch('https://localhost:7198/api/User/register/', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          username: username,
+          email: email,
+          password: password,
+          confirmPassword: confirmPassword,
+      })
+    })
+      .then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(() => {
+        setUser(username);
+        handleStats();
+        router.push('/home');
+      })
+      .catch((error) => {
+        console.error("Error registering:", error);
+      });
+  }
+
   function handleLogin(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault();
     fetch('https://localhost:7198/api/User/login/', {
@@ -32,7 +64,7 @@ export default function Login() {
         }
         return response.json();
       })
-      .then((data) => {
+      .then(() => {
         setUser(username);
         handleStats();
         router.push('/home');
@@ -98,21 +130,21 @@ export default function Login() {
                   <div className="grid gap-4">
                   <div className="grid gap-2">
                       <Label htmlFor="email">Username</Label>
-                      <Input id="username" type="text" required />
+                      <Input id="username" type="text" required onChange={(e) => setUsername(e.target.value)}/>
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" placeholder="m@example.com" required />
+                      <Input id="email" type="email" placeholder="m@example.com" required onChange={(e) => setEmail(e.target.value)}/>
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="password">Password</Label>
-                      <Input id="password" type="password" required />
+                      <Input id="password" type="password" required onChange={(e) => setPassword(e.target.value)}/>
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="confirm-password">Confirm Password</Label>
-                      <Input id="confirm-password" type="password" required />
+                      <Input id="confirm-password" type="password" required onChange={(e) => setConfirmPassword(e.target.value)}/>
                     </div>
-                    <Button className="w-full">Create Account</Button>
+                    <Button className="w-full" onClick={(e) => handleRegister(e)}>Create Account</Button>
                   </div>
                 </form>
               </TabsContent>

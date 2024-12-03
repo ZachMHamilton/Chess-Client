@@ -50,7 +50,7 @@ export default function Versus() {
         .catch((error) => {
             console.error("Error fetching active games from backend:", error);
         });
-  }, []); 
+  }, [userId]); 
 
   useEffect(() => {
     if(turn == 'bot') {
