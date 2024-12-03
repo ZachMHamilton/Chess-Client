@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AuthContext } from '@/context/auth-context'
 import { useRouter } from 'next/navigation'
+import { getUserStats, loginUser, registerUser } from '@/services/userService'
 
 export default function Login() {
   const router = useRouter();
@@ -15,89 +16,60 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [error, setError] = useState<string | null>(null);
   
-  function handleRegister(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+  async function handleRegister(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault();
-    fetch('https://localhost:7198/api/User/register/', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-          username: username,
-          email: email,
-          password: password,
-          confirmPassword: confirmPassword,
-      })
-    })
-      .then((response) => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(() => {
-        setUser(username);
-        handleStats();
-        router.push('/home');
-      })
-      .catch((error) => {
-        console.error("Error registering:", error);
-      });
+  
+    try {
+      await registerUser(username, email, password, confirmPassword);
+      setUser(username);
+      await handleStats();
+      router.push('/home');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError('Error registering: ' + error.message);
+      } else {
+        setError('An unknown error occurred');
+      }
+    }
   }
-
-  function handleLogin(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+  
+  async function handleLogin(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault();
-    fetch('https://localhost:7198/api/User/login/', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-          username: username,
-          password: password,
-      })
-    })
-      .then((response) => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(() => {
-        setUser(username);
-        handleStats();
-        router.push('/home');
-      })
-      .catch((error) => {
-        console.error("Error logging in:", error);
-      });
+  
+    try {
+      await loginUser(username, password);
+      setUser(username);
+      await handleStats();
+      router.push('/home');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError('Error logging in: ' + error.message);
+      } else {
+        setError('An unknown error occurred');
+      }
+    }
   }
-
-  function handleStats(){
-    fetch(`https://localhost:7198/api/User/${username}/`, {
-      method: 'GET',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-    })
-      .then((response) => {
-          if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
-      })
-      .then((data) => {
-          setUserStats(data);
-      })
-      .catch((error) => {
-          console.error("Error fetching user stats:", error);
-      });
+  
+  async function handleStats() {
+    try {
+      const stats = await getUserStats(username);
+      setUserStats(stats);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError('Error fetching user stats: ' + error.message);
+      } else {
+        setError('An unknown error occurred');
+      }
+    }
   }
+  
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950">
       <main className="flex-grow container mx-auto px-4 py-8 flex items-center justify-center">
         <Card className="w-full max-w-md">
+          {error && <div className='text-xl font-bold text-center text-red-600 p-2'>{error}</div>}
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-bold text-center">Welcome to ChessMaster</CardTitle>
             <CardDescription className="text-center">
