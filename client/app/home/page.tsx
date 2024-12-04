@@ -9,9 +9,11 @@ import { useRouter } from 'next/navigation'
 import { AuthContext } from '@/context/auth-context'
 
 export default function Home() {
-  const {user, userStats} = useContext(AuthContext);
   const router = useRouter();
-  console.log(user);
+  const {user, userStats} = useContext(AuthContext);
+  if (!user) {
+    router.push('/login');
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950">

@@ -119,7 +119,15 @@ export const usePuzzle = (rating: number) => {
   const previousPuzzle = () => {
     if (currentPuzzle > 0) {
       setCurrentPuzzle(currentPuzzle - 1);  
-      setCurrentStreak(currentStreak - 1);
+      setCurrentStreak(currentStreak > 0 ? currentStreak - 1 : 0);
+    }
+  };
+
+  const getHint = () => {
+    if (currentMove < moves.length) {
+      setFeedback(`Hint: ${moves[currentMove].before.toLocaleUpperCase()} to move`);
+      setFeedbackColor('text-blue-600');
+      setCurrentStreak(0);
     }
   };
 
@@ -136,5 +144,6 @@ export const usePuzzle = (rating: number) => {
     currentPuzzle,
     orientation,
     previousPuzzle,
+    getHint
   };
 };

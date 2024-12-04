@@ -8,7 +8,7 @@ import { Chessboard } from 'react-chessboard'
 import { usePuzzle } from '@/hooks/usePuzzle'
 
 export default function Puzzles() {
-  const [rating] = useState<number>(1000);
+  const [rating] = useState<number>(2000);
   const {
     game,
     feedback,
@@ -17,7 +17,8 @@ export default function Puzzles() {
     onMoveMade,
     nextPuzzle,
     orientation,
-    previousPuzzle
+    previousPuzzle,
+    getHint
   } = usePuzzle(rating);
 
   return (
@@ -51,11 +52,11 @@ export default function Puzzles() {
           </Card>
           <div className="space-y-6">
             <div className="grid grid-cols-3 gap-4">
-              <Button variant="outline" className="w-full py-6">
+              <Button variant="outline" className="w-full py-6" onClick={() => getHint()}>
                 <HelpCircle className="h-6 w-6" />
                 <span className="sr-only">Hint</span>
               </Button>
-              <Button variant="outline" className="w-full py-6" onClick={(e) => previousPuzzle()}>
+              <Button variant="outline" className="w-full py-6" onClick={() => previousPuzzle()}>
                 <SkipBack className="h-6 w-6" />
                 <span className="sr-only">Previous Puzzle</span>
               </Button>
