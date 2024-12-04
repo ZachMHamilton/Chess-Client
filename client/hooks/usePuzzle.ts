@@ -36,8 +36,9 @@ export const usePuzzle = (rating: number) => {
     if (puzzles.length > 0 && puzzles[currentPuzzle].fen) {
       const puzzle = puzzles[currentPuzzle];
       setOrientation(puzzle.fen.split(' ')[1] === 'b' ? 'white' : 'black');
-      setGame(new Chess(puzzle.fen));
-      setMoves(extractMoves());
+      const newGame = new Chess(puzzle.fen);
+      setGame(newGame);
+      setMoves(extractMoves(newGame));
     }
   }, [currentPuzzle, puzzles]);
 
@@ -56,19 +57,30 @@ export const usePuzzle = (rating: number) => {
     setGame(new Chess(result.fen()));
   }, [botTurn]);
 
-  const extractMoves = () => {
+  useEffect(() => {
+    if (puzzles.length > 0 && !moves[currentMove]) {
+      setFeedback('Puzzle complete!');
+      setTimeout(() => {
+        nextPuzzle();
+      }, 1500);
+    }
+  }, [currentMove]);
+
+
+  const extractMoves = (current: Chess) => {
     const movesArray = puzzles[currentPuzzle]?.moves.split(' ');
     const moveList = movesArray?.map(move => ({
       before: move.substring(0, 2),
       after: move.substring(2, 4),
     })) || [];
     
+    console.log(current.fen());
     setTimeout(() => {
       const newGame = makeMove({
         from: moveList[0].before,
         to: moveList[0].after,
         promotion: "q",
-      }, game);
+      }, current);
       if (newGame){
         setGame(newGame);
       }
@@ -85,9 +97,6 @@ export const usePuzzle = (rating: number) => {
       const result = makeMove({ from: sourceSquare, to: targetSquare, promotion: "q" }, game);
       if (!result) return false;
       setCurrentMove(currentMove + 1);
-      if (!moves[currentMove + 1]) {
-        setFeedback('Puzzle complete!');
-      }
       setBotTurn(!botTurn);
       const newFen = result.fen();
       setGame(new Chess(newFen));
@@ -107,6 +116,13 @@ export const usePuzzle = (rating: number) => {
     }
   };
 
+  const previousPuzzle = () => {
+    if (currentPuzzle > 0) {
+      setCurrentPuzzle(currentPuzzle - 1);  
+      setCurrentStreak(currentStreak - 1);
+    }
+  };
+
   return {
     game,
     feedback,
@@ -119,5 +135,6 @@ export const usePuzzle = (rating: number) => {
     currentMove,
     currentPuzzle,
     orientation,
+    previousPuzzle,
   };
 };

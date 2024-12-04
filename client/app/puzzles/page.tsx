@@ -2,13 +2,13 @@
 import React, { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { HelpCircle, RotateCcw, SkipForward } from 'lucide-react'
+import { HelpCircle, RotateCcw, SkipForward, SkipBack } from 'lucide-react'
 import Header from '@/components/ui/header'
 import { Chessboard } from 'react-chessboard'
 import { usePuzzle } from '@/hooks/usePuzzle'
 
 export default function Puzzles() {
-  const [rating] = useState<number>(350);
+  const [rating] = useState<number>(1000);
   const {
     game,
     feedback,
@@ -16,7 +16,8 @@ export default function Puzzles() {
     currentStreak,
     onMoveMade,
     nextPuzzle,
-    orientation
+    orientation,
+    previousPuzzle
   } = usePuzzle(rating);
 
   return (
@@ -54,9 +55,9 @@ export default function Puzzles() {
                 <HelpCircle className="h-6 w-6" />
                 <span className="sr-only">Hint</span>
               </Button>
-              <Button variant="outline" className="w-full py-6">
-                <RotateCcw className="h-6 w-6" />
-                <span className="sr-only">Retry</span>
+              <Button variant="outline" className="w-full py-6" onClick={(e) => previousPuzzle()}>
+                <SkipBack className="h-6 w-6" />
+                <span className="sr-only">Previous Puzzle</span>
               </Button>
               <Button variant="outline" className="w-full py-6" onClick={() => nextPuzzle()}>
                 <SkipForward className="h-6 w-6" />
