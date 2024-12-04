@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-// hooks/usePuzzle.ts
 import { useEffect, useState } from 'react';
 import { Chess } from 'chess.js';
 import { fetchPuzzleData } from '../services/puzzleService';
@@ -73,7 +72,7 @@ export const usePuzzle = (rating: number) => {
       if (newGame){
         setGame(newGame);
       }
-    }, 2000);
+    }, 1500);
     return moveList;
   };
 
