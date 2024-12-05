@@ -21,14 +21,15 @@ export const usePuzzle = (rating: number) => {
   const [feedbackColor, setFeedbackColor] = useState<string>('text-gray-600');
   const [orientation, setOrientation] = useState<'white' | 'black'>('white');
 
+  const loadPuzzles = async () => {
+    const data = await fetchPuzzleData(rating);
+    setPuzzles(data);
+    if (data.length > 0 && data[0].fen) {
+      setGame(new Chess(data[0].fen));
+    }
+  };
+
   useEffect(() => {
-    const loadPuzzles = async () => {
-      const data = await fetchPuzzleData(rating);
-      setPuzzles(data);
-      if (data.length > 0 && data[0].fen) {
-        setGame(new Chess(data[0].fen));
-      }
-    };
     loadPuzzles();
   }, [rating]);
 
@@ -39,6 +40,7 @@ export const usePuzzle = (rating: number) => {
       const newGame = new Chess(puzzle.fen);
       setGame(newGame);
       setMoves(extractMoves(newGame));
+      console.log('extractMoves');
     }
   }, [currentPuzzle, puzzles]);
 
@@ -74,7 +76,6 @@ export const usePuzzle = (rating: number) => {
       after: move.substring(2, 4),
     })) || [];
     
-    console.log(current.fen());
     setTimeout(() => {
       const newGame = makeMove({
         from: moveList[0].before,
@@ -94,12 +95,17 @@ export const usePuzzle = (rating: number) => {
     setFeedbackColor(isMoveCorrect ? 'text-green-400' : 'text-red-600');
     setCurrentStreak(!isMoveCorrect ? 0 : moves[currentMove + 1] == undefined ? currentStreak + 1 : currentStreak);
     if (isMoveCorrect) {
+      console.log('moving bot ', currentMove);
+      console.log('pos before', game.fen());
       const result = makeMove({ from: sourceSquare, to: targetSquare, promotion: "q" }, game);
       if (!result) return false;
       setCurrentMove(currentMove + 1);
+      console.log('bot move before', botTurn);
       setBotTurn(!botTurn);
+      console.log('bot move after', botTurn);
       const newFen = result.fen();
       setGame(new Chess(newFen));
+      console.log('pos after', newFen);
     }
     return isMoveCorrect;
   };
@@ -112,7 +118,9 @@ export const usePuzzle = (rating: number) => {
       setBotTurn(false);
       setGame(new Chess(puzzles[currentPuzzle + 1].fen));
     } else {
-      setFeedback('Congratulations! You have completed all puzzles.');
+      setCurrentMove(1);
+      setBotTurn(false);
+      loadPuzzles()
     }
   };
 

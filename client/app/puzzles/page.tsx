@@ -8,7 +8,7 @@ import { Chessboard } from 'react-chessboard'
 import { usePuzzle } from '@/hooks/usePuzzle'
 
 export default function Puzzles() {
-  const [rating] = useState<number>(2000);
+  const [rating] = useState<number>(1000);
   const {
     game,
     feedback,
