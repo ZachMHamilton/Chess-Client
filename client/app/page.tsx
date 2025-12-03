@@ -1,18 +1,19 @@
 'use client';
-import { useContext } from "react";
-import Home from "./home/page";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "@/context/auth-context";
-import Login from "./login/page";
+import { useRouter } from "next/router";
 
 export default function App() {
-  const {user} = useContext(AuthContext);
-  return (
-    <div>
-      {user != null ? (
-        <Home />
-      ) : (
-        <Login />
-      )}
-    </div>
-  );
+  const { user } = useContext(AuthContext)
+  const router = useRouter()
+
+  useEffect(() => {
+    if (user) {
+      router.replace('/home')
+    } else {
+      router.replace('/login')
+    }
+  }, [user, router])
+
+  return null
 }
