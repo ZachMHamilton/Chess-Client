@@ -9,7 +9,7 @@ import { AuthContext } from '@/context/auth-context'
 
 export default function Profile() {
   const {user, userStats} = useContext(AuthContext);
-  const [games, setGames] = useState([]);
+  //const [games, setGames] = useState([]);
 
   function getGameHistory(){
     fetch(`https://localhost:7198/api/Game/User/${userStats.userId}/`, {
@@ -26,7 +26,7 @@ export default function Profile() {
       })
       .then((data) => {
         console.log(data);
-        setGames(data);
+        //setGames(data);
       })
       .catch((error) => {
         console.error("Error fetching user history:", error);

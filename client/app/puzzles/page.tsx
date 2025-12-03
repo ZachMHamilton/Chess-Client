@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { HelpCircle, RotateCcw, SkipForward, SkipBack } from 'lucide-react'
+import { HelpCircle, SkipForward, SkipBack } from 'lucide-react'
 import Header from '@/components/ui/header'
 import { Chessboard } from 'react-chessboard'
 import { usePuzzle } from '@/hooks/usePuzzle'
