@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { TabsContent, TabsList, TabsTrigger, Tabs } from "@/components/ui/tabs"
@@ -11,9 +11,12 @@ import { AuthContext } from '@/context/auth-context'
 export default function Home() {
   const router = useRouter();
   const {user, userStats} = useContext(AuthContext);
-  if (!user) {
-    router.push('/login');
-  }
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/login');
+    }
+  }, [user, router]);
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950">
